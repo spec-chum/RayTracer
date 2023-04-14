@@ -45,24 +45,22 @@ public static class RayTrace
         float diffuseLightIntensity = 0;
         float specularLightIntensity = 0;
 
-        foreach (Light v in lights)
+        foreach (Light light in lights)
         {
-            Vector3 lightDir = Vector3.Normalize(v.Position - point);
-            float lightDistance = (v.Position - point).Length();
-
-            Vector3 shadowOrig = Vector3.Dot(lightDir, normal) < 0f ? point - (normal * 1e-3f) : point + (normal * 1e-3f);
+            var lightDir = Vector3.Normalize(light.Position - point);
+            var shadowOrig = Vector3.Dot(lightDir, normal) < 0f ? point - (normal * 0.001f) : point + (normal * 0.001f);
             var shadowPt = Vector3.Zero;
             var shadowN = Vector3.Zero;
             var tmpMaterial = new Material();
 
             if (SceneIntersect(shadowOrig, lightDir, spheres, ref shadowPt, ref shadowN, ref tmpMaterial)
-                && (shadowPt - shadowOrig).Length() < lightDistance)
+                && (shadowPt - shadowOrig).LengthSquared() < (light.Position - point).LengthSquared())
             {
                 continue;
             }
 
-            diffuseLightIntensity += v.Intensity * MathF.Max(0f, Vector3.Dot(lightDir, normal));
-            specularLightIntensity += MathF.Pow(MathF.Max(0f, Vector3.Dot(-Vector3.Reflect(-lightDir, normal), direction)), material.SpecularExponent) * v.Intensity;
+            diffuseLightIntensity += light.Intensity * MathF.Max(0f, Vector3.Dot(lightDir, normal));
+            specularLightIntensity += MathF.Pow(MathF.Max(0f, Vector3.Dot(-Vector3.Reflect(-lightDir, normal), direction)), material.SpecularExponent) * light.Intensity;
         }
 
         return (material.DiffuseColour * diffuseLightIntensity * material.Albedo.X) + new Vector3(specularLightIntensity * material.Albedo.Y);

@@ -2,11 +2,11 @@ using System.Numerics;
 
 namespace RayTracer
 {
-	public class Material
+	public readonly struct Material
 	{
-		public Vector3 DiffuseColour;
-		public Vector3 Albedo;
-		public float SpecularExponent;
+		public readonly Vector3 DiffuseColour;
+		public readonly Vector3 Albedo;
+		public readonly float SpecularExponent;
 
 		public Material()
 		{

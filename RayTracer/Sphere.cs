@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace RayTracer
 {
-	public class Sphere
+	public readonly struct Sphere
 	{
 		public readonly Vector3 Centre;
 		public readonly float Radius;

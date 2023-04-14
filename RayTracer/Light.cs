@@ -2,10 +2,10 @@ using System.Numerics;
 
 namespace RayTracer
 {
-	public class Light
+	public readonly struct Light
 	{
-		public Vector3 Position;
-		public float Intensity;
+		public readonly Vector3 Position;
+		public readonly float Intensity;
 
 		public Light(Vector3 p, float i)
 		{

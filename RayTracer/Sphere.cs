@@ -4,36 +4,38 @@ using System.Runtime.CompilerServices;
 
 namespace RayTracer
 {
-	public readonly struct Sphere
-	{
-		public readonly Vector3 Centre;
-		public readonly float Radius;
-		public readonly Material Material;
+    public readonly struct Sphere
+    {
+        private readonly float _radiusSqrd;
 
-		public Sphere(Vector3 centre, float radius, Material material)
-		{
-			Centre = centre;
-			Radius = radius;
-			Material = material;
-		}
+        public Vector3 Centre { get; }
+        public float Radius { get; }
+        public Material Material { get; }
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public bool RayIntersect(Vector3 origin, Vector3 direction, ref float t0)
-		{
-			Vector3 L = Centre - origin;
-			float tca = Vector3.Dot(L, direction);
-			float d2 = Vector3.Dot(L, L) - (tca * tca);
-			float radiusSqrd = Radius * Radius;
+        public Sphere(Vector3 centre, float radius, Material material)
+        {
+            Centre = centre;
+            Radius = radius;
+            Material = material;
+            _radiusSqrd = radius * radius;
+        }
 
-			if (d2 > radiusSqrd)
-			{
-				return false;
-			}
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool RayIntersect(Vector3 origin, Vector3 direction, ref float t0)
+        {
+            Vector3 L = Centre - origin;
+            float tca = Vector3.Dot(L, direction);
+            float d2 = Vector3.Dot(L, L) - (tca * tca);
 
-			float thc = (float)MathF.Sqrt((radiusSqrd) - d2);
-			t0 = tca >= thc ? tca - thc : tca + thc;
+            if (d2 > _radiusSqrd)
+            {
+                return false;
+            }
 
-			return t0 >= 0;
-		}
-	}
+            float thc = MathF.Sqrt(_radiusSqrd - d2);
+            t0 = tca >= thc ? tca - thc : tca + thc;
+
+            return t0 >= 0;
+        }
+    }
 }
